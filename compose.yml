@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  #Clickhouse server
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    container_name: clickhouse
+    hostname: clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test: wget -q --spider http://clickhouse:8123/ping
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
+
+  # Clickhouse UI
+  clickhouse-ui:
+    image: spoonest/clickhouse-tabix-web-client
+    container_name: clickhouse-ui
+    hostname: clickhouse-ui
+    ports:
+      - "8080:80"
+
+  # Migrations one-shot container
+  # goose-migrations:
+  #   image:
+  #   command:
+  #   depends_on:
+  #     clickhouse:
+  #       condition: service_healthy
