@@ -1,2 +1,2 @@
 #!/bin/bash
-docker-compose up && docker-compose rm -fsv
+docker compose up -d --no-deps --build && docker compose rm -fsv

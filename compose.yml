@@ -28,9 +28,16 @@ services:
       - "8080:80"
 
   # Migrations one-shot container
-  # goose-migrations:
-  #   image:
-  #   command:
-  #   depends_on:
-  #     clickhouse:
-  #       condition: service_healthy
+  goose-migrations:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: /goose/migrate.sh
+    environment:
+      - GOOSE_DRIVER=${GOOSE_DRIVER}
+      - GOOSE_DBSTRING=${GOOSE_DBSTRING}
+      - GOOSE_MIGRATION_DIR=${GOOSE_MIGRATION_DIR}
+      - DESIRED_DB_VERSION=${DESIRED_DB_VERSION}
+    depends_on:
+      clickhouse:
+        condition: service_healthy
